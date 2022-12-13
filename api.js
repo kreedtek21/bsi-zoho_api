@@ -9,7 +9,7 @@ import cors from 'cors';
 var app = express();
 var router = Router();
 
-const hostname = 'home.demosys.us';
+const hostname = '0.0.0.0';
 const httpPort = 8080;
 const httpsPort = 8443;
 
