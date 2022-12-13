@@ -26,21 +26,18 @@ app.use('/api/v1', router);
 router.use((request, response, next) => {
     var newHost = request.headers.host.substring(0, request.headers.host.indexOf(':'));
     if (request.protocol === 'http') {
-        console.log('need to redirect');
-        response.redirect(301, `https://${newHost}:${httpsPort}${request.url}`);
-        console.log('after redirect');
+        // request.originalUrl is complete url path
+        var newUrl = `https://${newHost}:${httpsPort}${request.originalUrl}`;
+        // 307 redirect keeps method, ie: post
+        return response.redirect(307, newUrl);
+    } else {
+        next();
     }
-    next();
 });
 
 router.use(express.static('./public'));
 
-router.use((request, response, next) => {
-    next();
-});
-
 router.route('/createBid').post((request, response) => {
-    console.log(request.protocol);
     createBid(request.body.bidName, request.body.firstName, request.body.lastName)
         .then((data) => {
             if (data > 0) {
