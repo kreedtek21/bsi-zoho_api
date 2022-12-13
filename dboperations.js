@@ -12,8 +12,10 @@ async function createBid(bidName, firstName, lastName) {
             .execute('spCreateBid');
         return result.returnValue;
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 }
 
-export default createBid;
+export {
+    createBid
+};
