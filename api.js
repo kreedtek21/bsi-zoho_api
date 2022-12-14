@@ -48,8 +48,8 @@ router.route('/createBid').post((request, response) => {
             }
         })
         .catch((e) => {
-            console.error(e);
-            response.status(500).json({error: e});
+            console.error("Failed getting bid: " + e);
+            response.status(500).json({"error": e});
         });
 });
 
