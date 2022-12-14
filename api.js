@@ -38,12 +38,13 @@ router.use((request, response, next) => {
 router.use(express.static('./public'));
 
 router.route('/createBid').post((request, response) => {
+    var dbName;
     createBid(request.body.bidName, request.body.firstName, request.body.lastName)
         .then((data) => {
-            if (data > 0) {
-                response.status(500).json({error: "Failed: Error code " + data});
+            if (data[1].returnValue > 0) {
+                response.status(500).json({"error": data[1].returnValue});
             } else {
-                response.status(201).json({success: "Success"});
+                response.status(201).json({"bidNo": data[1].output.bidNo, "dbName": data[0]});
             }
         })
         .catch((e) => {

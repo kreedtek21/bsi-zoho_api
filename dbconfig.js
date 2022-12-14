@@ -5,7 +5,6 @@ const config = {
     user: process.env.SQL_USER,
     password: process.env.SQL_PASS,
     server: process.env.SQL_HOST,
-    database: '2022-ost-master',
     options: {
         trustedconnection: true,
         enableArithAbort: true,

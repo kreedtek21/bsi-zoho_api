@@ -13,11 +13,11 @@ CREATE PROCEDURE spCreateBid
 	-- Add the parameters for the stored procedure here
 	@bidName nvarchar(75), 
 	@estimatorFirst nvarchar(50),
-	@estimatorLast nvarchar(50)
+	@estimatorLast nvarchar(50),
+	@bidNo int output
 AS
 BEGIN
-	DECLARE @p1 int, 
-		@newUID int, 
+	DECLARE	@newUID int, 
 		@bidPageUID int,
 		@empUID int,
 		@existingUID int
@@ -40,9 +40,9 @@ BEGIN
 	if @existingUID is not null
 		return 4
 	
-	set @p1=(SELECT NextBidNo 
+	set @bidNo=(SELECT NextBidNo 
 		FROM Settings)
-	exec USP_GetNextBidNo @desiredBidNo=@p1 output
+	exec USP_GetNextBidNo @desiredBidNo=@bidNo output
 
 	INSERT INTO Bids (
 		[BidProjectUID], [ParentBidUID], [OrigBidProjectUID], [OrigParentBidUID], [JobStatusUID], 
@@ -63,7 +63,7 @@ BEGIN
 	(
 		NULL, NULL, NULL, NULL, 1, 
 		@empUID, NULL, NULL, NULL, NULL, 
-		NULL, @p1, 0, NULL, @bidName, 
+		NULL, @bidNo, 0, NULL, @bidName, 
 		NULL, NULL, NULL, (SELECT GETDATE() AT TIME ZONE 'UTC' AT TIME ZONE 'Central Standard Time'), NULL, 
 		0, NULL, NULL, 1, 8, 
 		0, 0, NULL, NULL, 1, 
@@ -125,4 +125,8 @@ BEGIN
 	INSERT INTO BidLegends ([BidUID], [BidPageUID], [Rotation], [FontName], [FontColor], [FontSize], [FontBold], [FontItalic], [FontUnderline], [IsShowTotals], [MoveToCorner])  VALUES ( @newUID, @bidPageUID, 0, 'Arial', 0, 12, 0, 0, 0, 0, 1)
 
 END
+GO
+
+GRANT EXECUTE ON spCreateBid  
+    TO public;
 GO
