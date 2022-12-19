@@ -31,6 +31,13 @@ router.use((request, response, next) => {
         // 307 redirect keeps method, ie: post
         return response.redirect(307, newUrl);
     } else {
+        const token = request.headers["x-access-token"];
+        if (!token) {
+            return response.status(403).send("A token is required for authentication");
+        }
+        if (token != process.env.TOKEN_PASS) {
+            return response.status(401).send("Invalid login");
+        }
         next();
     }
 });
@@ -38,7 +45,6 @@ router.use((request, response, next) => {
 router.use(express.static('./public'));
 
 router.route('/createBid').post((request, response) => {
-    var dbName;
     createBid(request.body.bidName, request.body.firstName, request.body.lastName)
         .then((data) => {
             if (data[1].returnValue > 0) {
